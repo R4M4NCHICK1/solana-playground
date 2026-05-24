@@ -6,14 +6,16 @@ import Link from "../../Link";
 import Markdown from "../../Markdown";
 import TutorialDetails from "../TutorialDetails";
 import { PointedArrow, Triangle } from "../../Icons";
-import { PgTheme, PgTutorial } from "../../../utils/pg";
+import { Emoji } from "../../../constants";
+import { PgTheme, PgTutorial } from "../../../utils";
 import type { TutorialAboutComponentProps } from "../types";
 
-export const About: FC<TutorialAboutComponentProps> = ({ about, start }) => {
-  const tutorial = PgTutorial.data;
-  if (!tutorial) return null;
-
-  const isStarted = PgTutorial.isStarted(tutorial.name);
+export const About: FC<TutorialAboutComponentProps> = ({
+  about,
+  isStarted,
+  start,
+}) => {
+  const tutorial = PgTutorial.current!;
   const isFinished = PgTutorial.completed;
 
   return (
@@ -60,7 +62,11 @@ export const About: FC<TutorialAboutComponentProps> = ({ about, start }) => {
                 color={isFinished ? "success" : undefined}
                 fontWeight="bold"
                 leftIcon={
-                  isFinished ? <span>✔</span> : <Triangle rotate="90deg" />
+                  isFinished ? (
+                    <span>{Emoji.CHECKMARK}</span>
+                  ) : (
+                    <Triangle rotate="90deg" />
+                  )
                 }
               >
                 {isFinished ? "COMPLETED" : isStarted ? "CONTINUE" : "START"}
@@ -84,7 +90,11 @@ export const About: FC<TutorialAboutComponentProps> = ({ about, start }) => {
         </GeneratedWrapper>
 
         <CustomWrapper>
-          {typeof about === "string" ? <Markdown>{about}</Markdown> : about}
+          {typeof about === "string" ? (
+            <Markdown linkable>{about}</Markdown>
+          ) : (
+            about
+          )}
         </CustomWrapper>
       </TutorialAboutPage>
     </Wrapper>
@@ -111,7 +121,7 @@ const GoBackButtonWrapper = styled.div`
 
 const TutorialAboutPage = styled.div`
   ${({ theme }) => css`
-    ${PgTheme.convertToCSS(theme.views.main.primary.tutorial.aboutPage)};
+    ${PgTheme.convertToCSS(theme.components.tutorial.aboutPage)};
   `}
 `;
 
